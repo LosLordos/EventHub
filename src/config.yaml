@@ -1,0 +1,6 @@
+db:
+  connection_string: "mssql+pyodbc://USER:PASSWORD@SERVER/DBNAME?driver=ODBC+Driver+17+for+SQL+Server"
+app:
+  mode: "dev"
+imports:
+  max_rows: 5000
