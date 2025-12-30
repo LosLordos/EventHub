@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Buy tickets</h2>
+<p class="muted">Tahle stránka je hlavní use-case: transakce + hlídání kapacity + zápis účastníka.</p>
+
+{% if success %}
+  <div class="ok">{{ success }}</div>
+{% endif %}
+{% if error %}
+  <div class="err">{{ error }}</div>
+{% endif %}
+
+<form method="post" action="/buy">
+  <label>Event</label>
+  <select name="event_id" required>
+    {% for e in events %}
+      <option value="{{ e.EventId }}">{{ e.Title }} | {{ e.StartsAt }} | cap {{ e.Capacity }} sold {{ e.SoldCount }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Customer</label>
+  <select name="customer_id" required>
+    {% for c in customers %}
+      <option value="{{ c.CustomerId }}">{{ c.FullName }} ({{ c.Email }})</option>
+    {% endfor %}
+  </select>
+
+  <label>Quantity</label>
+  <input name="quantity" type="number" min="1" value="1" required>
+
+  <label>Payment method</label>
+  <select name="method" required>
+    <option>Card</option>
+    <option>Cash</option>
+    <option>BankTransfer</option>
+  </select>
+
+  <button type="submit">Buy</button>
+</form>
+{% endblock %}

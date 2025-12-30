@@ -10,6 +10,7 @@ class Settings:
 def load_settings(path: str = "config.yaml") -> Settings:
     with open(path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f) or {}
+
     try:
         cs = data["db"]["connection_string"]
         mode = data.get("app", {}).get("mode", "dev")

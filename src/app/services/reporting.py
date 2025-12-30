@@ -5,23 +5,35 @@ class ReportingService:
     def __init__(self, engine: Engine):
         self.engine = engine
 
-    def attendance(self):
+    def attendance(self) -> list[dict]:
         with self.engine.connect() as conn:
-            return list(conn.execute(text("SELECT * FROM dbo.v_event_attendance ORDER BY StartsAt")).mappings())
+            rows = conn.execute(text("""
+                SELECT EventId, Title, StartsAt, Capacity, SoldCount, Remaining
+                FROM dbo.v_event_attendance
+                ORDER BY StartsAt
+            """)).mappings().all()
+            return [dict(r) for r in rows]
 
-    def revenue(self):
+    def revenue(self) -> list[dict]:
         with self.engine.connect() as conn:
-            return list(conn.execute(text("SELECT * FROM dbo.v_event_revenue ORDER BY Revenue DESC")).mappings())
+            rows = conn.execute(text("""
+                SELECT EventId, Title, Revenue, PaymentsCount
+                FROM dbo.v_event_revenue
+                ORDER BY Revenue DESC
+            """)).mappings().all()
+            return [dict(r) for r in rows]
 
-    def summary_stats(self):
-        # agregace přes 3+ tabulek: Event + TicketOrder + Payment
+    def order_stats(self) -> dict:
         with self.engine.connect() as conn:
-            row = conn.execute(text("""
+            r = conn.execute(text("""
                 SELECT
-                  MIN(o.TotalPrice) AS MinOrder,
-                  MAX(o.TotalPrice) AS MaxOrder,
-                  AVG(o.TotalPrice) AS AvgOrder
-                FROM dbo.TicketOrder o
-                WHERE o.Status='Paid'
+                    MIN(CAST(TotalPrice AS float)) AS MinOrder,
+                    MAX(CAST(TotalPrice AS float)) AS MaxOrder,
+                    AVG(CAST(TotalPrice AS float)) AS AvgOrder,
+                    COUNT(*) AS PaidOrders
+                FROM dbo.TicketOrder
+                WHERE Status = 'Paid'
             """)).mappings().first()
-            return row or {"MinOrder": None, "MaxOrder": None, "AvgOrder": None}
+            if not r:
+                return {"MinOrder": None, "MaxOrder": None, "AvgOrder": None, "PaidOrders": 0}
+            return dict(r)

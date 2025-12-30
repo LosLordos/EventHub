@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Customers</h2>
+
+<div class="row">
+  <div class="col">
+    <table>
+      <thead><tr><th>ID</th><th>Email</th><th>Jméno</th><th>Telefon</th><th>Aktivní</th></tr></thead>
+      <tbody>
+        {% for c in customers %}
+          <tr>
+            <td>{{ c.CustomerId }}</td>
+            <td>{{ c.Email }}</td>
+            <td>{{ c.FullName }}</td>
+            <td>{{ c.Phone }}</td>
+            <td>{{ c.IsActive }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col">
+    <form method="post" action="/customers/create">
+      <h3>Vytvořit zákazníka</h3>
+      <label>Email</label>
+      <input name="email" type="email" required>
+      <label>Full name</label>
+      <input name="full_name" required>
+      <label>Phone</label>
+      <input name="phone">
+      <button type="submit">Create</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

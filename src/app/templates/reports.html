@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Reports</h2>
+<p class="muted">Návštěvnost a tržby jsou brané z DB view, statistiky z agregace TicketOrder.</p>
+
+<div class="card">
+  <h3>Order stats</h3>
+  <ul>
+    <li>Paid orders: <b>{{ stats.PaidOrders }}</b></li>
+    <li>Min order: <b>{{ stats.MinOrder }}</b></li>
+    <li>Max order: <b>{{ stats.MaxOrder }}</b></li>
+    <li>Avg order: <b>{{ stats.AvgOrder }}</b></li>
+  </ul>
+</div>
+
+<h3>Attendance (v_event_attendance)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>EventId</th><th>Title</th><th>StartsAt</th><th>Capacity</th><th>Sold</th><th>Remaining</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in attendance %}
+    <tr>
+      <td>{{ r.EventId }}</td>
+      <td>{{ r.Title }}</td>
+      <td>{{ r.StartsAt }}</td>
+      <td>{{ r.Capacity }}</td>
+      <td>{{ r.SoldCount }}</td>
+      <td>{{ r.Remaining }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3>Revenue (v_event_revenue)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>EventId</th><th>Title</th><th>Revenue</th><th>PaymentsCount</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in revenue %}
+    <tr>
+      <td>{{ r.EventId }}</td>
+      <td>{{ r.Title }}</td>
+      <td>{{ r.Revenue }}</td>
+      <td>{{ r.PaymentsCount }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

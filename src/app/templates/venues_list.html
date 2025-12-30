@@ -1,10 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "layout.html" %}
+{% block content %}
+<h2>Venues</h2>
+
+<div class="row">
+  <div class="col">
+    <table>
+      <thead><tr><th>ID</th><th>Název</th><th>Město</th><th>Adresa</th><th>Aktivní</th></tr></thead>
+      <tbody>
+        {% for v in venues %}
+          <tr>
+            <td>{{ v.VenueId }}</td>
+            <td>{{ v.Name }}</td>
+            <td>{{ v.City }}</td>
+            <td>{{ v.Address }}</td>
+            <td>{{ v.IsActive }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col">
+    <form method="post" action="/venues/create">
+      <h3>Vytvořit místo</h3>
+      <label>Name</label>
+      <input name="name" required>
+      <label>City</label>
+      <input name="city" required>
+      <label>Address</label>
+      <input name="address" required>
+      <button type="submit">Create</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

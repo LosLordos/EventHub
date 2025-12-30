@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+sqlalchemy
+pyodbc
+jinja2
+pyyaml
+email-validator

@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Events</h2>
+
+<div class="row">
+  <div class="col">
+    <table>
+      <thead><tr><th>ID</th><th>Title</th><th>Starts</th><th>VenueId</th><th>Cap</th><th>Sold</th><th>Price</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for e in events %}
+          <tr>
+            <td>{{ e.EventId }}</td>
+            <td>{{ e.Title }}</td>
+            <td>{{ e.StartsAt }}</td>
+            <td>{{ e.VenueId }}</td>
+            <td>{{ e.Capacity }}</td>
+            <td>{{ e.SoldCount }}</td>
+            <td>{{ e.TicketPrice }}</td>
+            <td>{{ e.Status }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col">
+    <form method="post" action="/events/create">
+      <h3>Vytvořit akci</h3>
+      <label>Venue</label>
+      <select name="venue_id" required>
+        {% for v in venues %}
+          <option value="{{ v.VenueId }}">{{ v.Name }} ({{ v.City }})</option>
+        {% endfor %}
+      </select>
+      <label>Title</label>
+      <input name="title" required>
+      <label>StartsAt (ISO)</label>
+      <input name="starts_at" placeholder="2026-02-01T19:00:00" required>
+      <label>Capacity</label>
+      <input name="capacity" type="number" min="0" required>
+      <label>TicketPrice</label>
+      <input name="ticket_price" type="number" step="0.01" min="0" required>
+      <label>Status</label>
+      <select name="status">
+        <option>Draft</option>
+        <option selected>Published</option>
+        <option>Cancelled</option>
+        <option>Finished</option>
+      </select>
+      <button type="submit">Create</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
