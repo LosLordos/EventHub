@@ -1,24 +1,18 @@
-# Architektura (D1 – Repository)
+# Architektura – D1 (Repository Pattern)
 
 ## Vrstvy
-- Domain (src/app/domain): datové modely + typy (bez DB)
-- Repositories (src/app/repositories): čisté CRUD + dotazy nad DB (bez business pravidel)
-- Services (src/app/services): business logika:
-  - ticketing: transakce nákupu + kapacita + platba + zápis účastníka
-  - reporting: návštěvnost + tržby (agregace z 3+ tabulek / view)
-  - importing: import CSV (customers), CSV (events)
-- API (src/app/api): REST endpointy
-- UI (src/app/ui + templates): jednoduché HTML stránky nad services
+- Domain: datové modely (Event, Customer, Venue, TicketOrder, Payment, EventParticipant)
+- Repositories: přístup do DB (CRUD + dotazy), žádná business pravidla
+- Services: business logika
+  - TicketingService: transakce nákupu + hlídání kapacity + platba + účastník
+  - ReportingService: report návštěvnosti a tržeb (+ agregace)
+  - ImportingService: import customers a events + validace + protokol chyb
+- API/UI: volají služby, mapují výjimky na srozumitelné chyby
 
-## Typické repository metody
+## Repository metody (přehled)
 - VenueRepository: list/get/create/update/delete
-- EventRepository:
-  - list/get/create/update/delete
-  - lock_for_update(event_id) / get_for_update s UPDLOCK
-  - increment_sold(event_id, qty) s kontrolou kapacity
-- CustomerRepository: list/get/create/update/delete + find_by_email
+- CustomerRepository: list/get/create/update/delete, find_by_email
+- EventRepository: list/get/create/update/delete, get_for_update(UPDLOCK)
 - TicketOrderRepository: create, get, list_by_customer, set_status
 - PaymentRepository: create, list_by_order
-- EventParticipantRepository: add_participant(event_id, customer_id) (idempotentní)
-
-
+- EventParticipantRepository: add(event_id, customer_id) idempotentně

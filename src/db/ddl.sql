@@ -1,5 +1,3 @@
--- DB: EventHub (předpoklad: DB už existuje)
-
 IF OBJECT_ID('dbo.v_event_attendance') IS NOT NULL DROP VIEW dbo.v_event_attendance;
 IF OBJECT_ID('dbo.v_event_revenue')    IS NOT NULL DROP VIEW dbo.v_event_revenue;
 
@@ -35,14 +33,12 @@ CREATE TABLE dbo.Event (
     Capacity       INT NOT NULL CHECK (Capacity >= 0),
     SoldCount      INT NOT NULL CONSTRAINT DF_Event_SoldCount DEFAULT(0),
     TicketPrice    FLOAT NOT NULL CHECK (TicketPrice >= 0),
-    Status         VARCHAR(20) NOT NULL
-        CHECK (Status IN ('Draft','Published','Cancelled','Finished')),
+    Status         VARCHAR(20) NOT NULL CHECK (Status IN ('Draft','Published','Cancelled','Finished')),
     CreatedAt      DATETIME2 NOT NULL CONSTRAINT DF_Event_CreatedAt DEFAULT(SYSDATETIME()),
     CONSTRAINT FK_Event_Venue FOREIGN KEY (VenueId) REFERENCES dbo.Venue(VenueId),
     CONSTRAINT CK_Event_Sold_Lte_Capacity CHECK (SoldCount <= Capacity)
 );
 
--- TicketOrder = nákup lístků (může být více kusů v jednom nákupu)
 CREATE TABLE dbo.TicketOrder (
     TicketOrderId  INT IDENTITY(1,1) PRIMARY KEY,
     EventId        INT NOT NULL,
@@ -50,14 +46,12 @@ CREATE TABLE dbo.TicketOrder (
     Quantity       INT NOT NULL CHECK (Quantity > 0),
     UnitPrice      FLOAT NOT NULL CHECK (UnitPrice >= 0),
     TotalPrice     AS (Quantity * UnitPrice) PERSISTED,
-    Status         VARCHAR(20) NOT NULL
-        CHECK (Status IN ('Created','Paid','Cancelled')),
+    Status         VARCHAR(20) NOT NULL CHECK (Status IN ('Created','Paid','Cancelled')),
     CreatedAt      DATETIME2 NOT NULL CONSTRAINT DF_TicketOrder_CreatedAt DEFAULT(SYSDATETIME()),
     CONSTRAINT FK_TicketOrder_Event FOREIGN KEY (EventId) REFERENCES dbo.Event(EventId),
     CONSTRAINT FK_TicketOrder_Customer FOREIGN KEY (CustomerId) REFERENCES dbo.Customer(CustomerId)
 );
 
--- M:N Event <-> Customer = účastníci (typicky se zapisuje po zaplacení)
 CREATE TABLE dbo.EventParticipant (
     EventId        INT NOT NULL,
     CustomerId     INT NOT NULL,
@@ -71,14 +65,12 @@ CREATE TABLE dbo.Payment (
     PaymentId      INT IDENTITY(1,1) PRIMARY KEY,
     TicketOrderId  INT NOT NULL,
     Amount         FLOAT NOT NULL CHECK (Amount >= 0),
-    Method         VARCHAR(20) NOT NULL
-        CHECK (Method IN ('Card','Cash','BankTransfer')),
+    Method         VARCHAR(20) NOT NULL CHECK (Method IN ('Card','Cash','BankTransfer')),
     PaidAt         DATETIME2 NOT NULL CONSTRAINT DF_Payment_PaidAt DEFAULT(SYSDATETIME()),
     IsRefund       BIT NOT NULL CONSTRAINT DF_Payment_IsRefund DEFAULT(0),
     CONSTRAINT FK_Payment_TicketOrder FOREIGN KEY (TicketOrderId) REFERENCES dbo.TicketOrder(TicketOrderId)
 );
 
--- VIEW 1: návštěvnost (počítá zaplacené objednávky)
 CREATE VIEW dbo.v_event_attendance AS
 SELECT
     e.EventId,
@@ -89,7 +81,6 @@ SELECT
     Remaining = (e.Capacity - e.SoldCount)
 FROM dbo.Event e;
 
--- VIEW 2: tržby (součet plateb bez refund)
 CREATE VIEW dbo.v_event_revenue AS
 SELECT
     e.EventId,
@@ -97,6 +88,4 @@ SELECT
     Revenue = SUM(CASE WHEN p.IsRefund = 0 THEN p.Amount ELSE -p.Amount END),
     PaymentsCount = COUNT(p.PaymentId)
 FROM dbo.Event e
-JOIN dbo.TicketOrder o ON o.EventId = e.EventId
-JOIN dbo.Payment p ON p.TicketOrderId = o.TicketOrderId
-GROUP BY e.EventId, e.Title;
+JOIN dbo.TicketOrder o
