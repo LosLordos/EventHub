@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Admin Dashboard</h2>
+    <a href="{{ url_for('report') }}" class="btn btn-info text-white">View Revenue Report</a>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card p-3 mb-4">
+            <h4>Create New Event</h4>
+            <form action="{{ url_for('create_event') }}" method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" name="title" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Venue</label>
+                    <select name="venue_id" class="form-control">
+                        {% for venue in venues %}
+                        <option value="{{ venue.id }}">{{ venue.name }} (Cap: {{ venue.capacity }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Start Time</label>
+                    <input type="datetime-local" name="start_time" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Price</label>
+                    <input type="number" name="base_price" step="0.01" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Create Event</button>
+            </form>
+        </div>
+
+        <div class="card p-3 mb-4">
+            <h4>Import Data (JSON)</h4>
+            <form action="{{ url_for('import_data') }}" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label">Select JSON File</label>
+                    <input type="file" name="file" class="form-control" required accept=".json">
+                    <div class="form-text">Format: {"users": [], "events": []}</div>
+                </div>
+                <button type="submit" class="btn btn-warning w-100">Import Data</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card p-3">
+            <h4>Existing Events</h4>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Venue</th>
+                        <th>Price</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                    <tr>
+                        <td>{{ event.id }}</td>
+                        <td>{{ event.title }}</td>
+                        <td>{{ event.venue_name }}</td>
+                        <td>${{ event.base_price }}</td>
+                        <td>{{ event.start_time }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

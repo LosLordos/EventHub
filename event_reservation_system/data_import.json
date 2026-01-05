@@ -1,0 +1,45 @@
+{
+    "users": [
+        {
+            "email": "jan.novak@example.com",
+            "password_hash": "hashed_secret_1",
+            "role": "customer",
+            "display_name": "Jan Novák"
+        },
+        {
+            "email": "petr.svoboda@example.com",
+            "password_hash": "hashed_secret_2",
+            "role": "customer",
+            "display_name": "Petr Svoboda"
+        },
+        {
+            "email": "manager@example.com",
+            "password_hash": "hashed_secret_admin",
+            "role": "admin",
+            "display_name": "Event Manager"
+        }
+    ],
+    "events": [
+        {
+            "venue_id": 1,
+            "title": "Rockový Festival 2026",
+            "description": "Největší rocková událost roku pod širým nebem.",
+            "start_time": "2026-06-15 18:00:00",
+            "base_price": 1200.0
+        },
+        {
+            "venue_id": 2,
+            "title": "Tech Conference 2026",
+            "description": "Konference o budoucnosti AI a programování.",
+            "start_time": "2026-09-20 09:00:00",
+            "base_price": 4500.0
+        },
+        {
+            "venue_id": 1,
+            "title": "Jazz Evening",
+            "description": "Pohodový večer s jazzovou hudbou a vínem.",
+            "start_time": "2026-07-10 20:00:00",
+            "base_price": 350.0
+        }
+    ]
+}

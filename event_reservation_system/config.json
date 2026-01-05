@@ -1,0 +1,12 @@
+{
+    "database": {
+        "host": "localhost",
+        "user": "root",
+        "password": "",
+        "database": "event_system_db"
+    },
+    "app": {
+        "secret_key": "supersecretkey",
+        "debug": true
+    }
+}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body p-5">
+                <span class="badge bg-secondary mb-2">Event</span>
+                <h1 class="fw-bold mb-3">{{ event.title }}</h1>
+                <h4 class="text-primary mb-4">${{ event.base_price }} / ticket</h4>
+
+                <hr>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <strong><i class="bi bi-clock"></i> Date & Time:</strong>
+                        <p>{{ event.start_time.strftime('%A, %d. %B %Y at %H:%M') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <strong><i class="bi bi-geo-alt"></i> Venue:</strong>
+                        <p>{{ event.venue_name }}</p>
+                        <small class="text-muted">Capacity: {{ event.capacity }} seats</small>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h5>Description</h5>
+                    <p class="text-muted">{{ event.description or 'No description provided.' }}</p>
+                </div>
+
+                <div class="bg-light p-4 rounded">
+                    <h5>Book Tickets</h5>
+                    {% if session.get('user_id') %}
+                    <form action="{{ url_for('book_ticket', event_id=event.id) }}" method="POST"
+                        class="d-flex gap-3 align-items-end">
+                        <div class="flex-grow-1">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" name="quantity" class="form-control" value="1" min="1" max="10">
+                        </div>
+                        <button type="submit" class="btn btn-success px-4" style="height: 38px;">Confirm
+                            Booking</button>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-warning mb-0">
+                        Please <a href="{{ url_for('login') }}">login</a> to book tickets.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
