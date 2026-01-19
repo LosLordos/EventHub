@@ -31,14 +31,14 @@ Otevřete příkazový řádek (CMD nebo PowerShell) ve složce s projektem.
 
 1.  **Nainstalujte potřebné knihovny**:
     ```bash
-    py -m pip install flask mysql-connector-python
+    python3 -m pip install flask mysql-connector-python
     ```
-    *(Pokud příkaz `py` nefunguje, zkuste `python` nebo `python3`)*
+    *(Pokud příkaz `python3` nefunguje, zkuste `python` nebo na Windows `py`)*
 
 2.  **Inicializace Databáze**:
     Tento krok vytvoří potřebné tabulky a pohledy ve vaší databázi.
     ```bash
-    py event_reservation_system/init_db.py
+    python3 event_reservation_system/init_db.py
     ```
     *Počkejte na výpis: "Database initialized successfully."*
 
@@ -46,7 +46,7 @@ Otevřete příkazový řádek (CMD nebo PowerShell) ve složce s projektem.
 
 1.  **Spusťte webový server**:
     ```bash
-    py event_reservation_system/app.py
+    python3 event_reservation_system/app.py
     ```
 2.  **Otevřete aplikaci**:
     *   Otevřete webový prohlížeč (Chrome, Firefox, Edge).
